@@ -1,0 +1,140 @@
+:root {
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: #e8edf2;
+  background:
+    radial-gradient(circle at top, rgba(38, 80, 115, 0.45), transparent 40%),
+    linear-gradient(135deg, #08111f, #0f1f2d 55%, #132b2b);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 20px 64px;
+}
+
+.hero {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #7ed7c1;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  line-height: 0.95;
+}
+
+.hero-copy {
+  max-width: 700px;
+  color: #b5c5d6;
+  font-size: 1.05rem;
+}
+
+.chat-shell {
+  border: 1px solid rgba(126, 215, 193, 0.18);
+  background: rgba(7, 16, 28, 0.72);
+  backdrop-filter: blur(14px);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+}
+
+.chat-log {
+  display: grid;
+  gap: 12px;
+  min-height: 360px;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 8px 4px 18px;
+}
+
+.message {
+  padding: 14px 16px;
+  border-radius: 18px;
+  width: min(100%, 720px);
+}
+
+.message p {
+  margin: 6px 0 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.message-role {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+
+.message.user {
+  justify-self: end;
+  background: linear-gradient(135deg, #0e7490, #155e75);
+}
+
+.message.assistant {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chat-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.chat-input-row textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(3, 8, 15, 0.7);
+  color: inherit;
+  font: inherit;
+}
+
+.chat-input-row button {
+  border: 0;
+  border-radius: 16px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #7ed7c1, #4cb8a5);
+  color: #06231d;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.loading {
+  color: #7ed7c1;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 24px 14px 32px;
+  }
+
+  .chat-input-row {
+    grid-template-columns: 1fr;
+  }
+}

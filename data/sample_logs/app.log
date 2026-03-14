@@ -1,0 +1,4 @@
+2026-03-15T10:01:11Z INFO checkout-service request started trace_id=abc123
+2026-03-15T10:01:14Z WARN checkout-service latency high p95=1800ms cpu=87
+2026-03-15T10:01:17Z ERROR checkout-service java.lang.OutOfMemoryError: Java heap space
+2026-03-15T10:01:19Z ERROR checkout-service request failed trace_id=abc123 exception=TimeoutError
