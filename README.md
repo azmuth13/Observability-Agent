@@ -31,7 +31,15 @@ Small agentic AI project scaffold for learning:
 ### Backend
 
 1. Create a virtual environment
+```bash
+    python3.11 -m venv .venv
+    source .venv/bin/activate
+```
 2. Install dependencies from `backend/requirements.txt`
+```bash
+    pip install --upgrade pip
+    pip install -r backend/requirements.txt
+```
 3. Copy `.env.example` to `.env`
 4. Start the API:
 
