@@ -15,7 +15,20 @@ from backend.tools.metrics_tool import get_metrics_tool
 def classify_query(state: dict[str, Any]) -> dict[str, Any]:
     """Route queries to the right tooling using lightweight heuristics."""
     query = state["query"].lower()
-    if any(keyword in query for keyword in ("log", "stack trace", "error", "exception")):
+    if any(
+        keyword in query
+        for keyword in (
+            "log",
+            "stack trace",
+            "error",
+            "exception",
+            "trace_id",
+            "trace id",
+            "trace",
+            "request id",
+            "correlation id",
+        )
+    ):
         intent = "logs"
     elif any(keyword in query for keyword in ("cpu", "memory", "latency", "metrics", "slow")):
         intent = "metrics"

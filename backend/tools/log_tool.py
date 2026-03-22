@@ -16,6 +16,7 @@ ERROR_PATTERNS = {
     "database": re.compile(r"SQLException|connection refused|deadlock", re.IGNORECASE),
 }
 TIMESTAMP_PATTERN = re.compile(r"^(?P<timestamp>\S+)")
+TRACE_ID_PATTERN = re.compile(r"\btrace_id=(?P<trace_id>[A-Za-z0-9_-]+)")
 
 
 def _read_log_file() -> str:
@@ -64,19 +65,29 @@ def analyze_logs_tool(log_text: str) -> str:
 
     evidence_lines = [line for line in log_text.splitlines() if line.strip()]
     timestamps = _extract_timestamps(evidence_lines)
+    trace_ids = _extract_trace_ids(evidence_lines)
 
     if not findings:
         if evidence_lines:
-            return (
+            summary = [
                 "No obvious incident signature detected.\n"
-                f"Evidence lines:\n{_format_evidence(evidence_lines)}\n"
+            ]
+            if timestamps:
+                summary.append(f"Relevant timestamps: {', '.join(timestamps)}.")
+            if trace_ids:
+                summary.append(f"Relevant trace IDs: {', '.join(trace_ids)}.")
+            summary.append(f"Evidence lines:\n{_format_evidence(evidence_lines)}")
+            summary.append(
                 "Recommended next step: inspect latency spikes, correlation IDs, and nearby log lines."
             )
+            return "\n".join(summary)
         return "No obvious incident signature detected. Inspect latency spikes and correlation IDs."
 
     summary = [f"Likely issue types: {', '.join(findings)}."]
     if timestamps:
         summary.append(f"Relevant timestamps: {', '.join(timestamps)}.")
+    if trace_ids:
+        summary.append(f"Relevant trace IDs: {', '.join(trace_ids)}.")
     if evidence_lines:
         summary.append(f"Evidence lines:\n{_format_evidence(evidence_lines)}")
     summary.append("Recommended next step: inspect surrounding logs, trace IDs, and recent deploys.")
@@ -84,8 +95,11 @@ def analyze_logs_tool(log_text: str) -> str:
 
 
 def _expand_query_terms(query: str) -> list[str]:
-    normalized = re.sub(r"[^a-zA-Z0-9]+", " ", query.lower())
+    lowered = query.lower()
+    normalized = re.sub(r"[^a-zA-Z0-9]+", " ", lowered)
     terms = {term for term in normalized.split() if len(term) > 2}
+    raw_terms = {term for term in re.split(r"\s+", lowered) if len(term) > 2}
+    terms.update(raw_terms)
 
     if {"out", "memory"} <= terms or "oom" in terms:
         terms.update({"outofmemoryerror", "java heap space", "heap", "memory"})
@@ -95,6 +109,8 @@ def _expand_query_terms(query: str) -> list[str]:
         terms.update({"error", "exception", "failed"})
     if "time" in terms or "when" in terms:
         terms.update({"timestamp"})
+    if "trace" in terms or "trace_id" in terms or "trace id" in lowered:
+        terms.update({"trace_id", "trace_id=", "trace", "request", "traceid"})
 
     return sorted(terms)
 
@@ -110,3 +126,12 @@ def _extract_timestamps(lines: list[str]) -> list[str]:
 
 def _format_evidence(lines: list[str]) -> str:
     return "\n".join(f"- {line}" for line in lines)
+
+
+def _extract_trace_ids(lines: list[str]) -> list[str]:
+    trace_ids: list[str] = []
+    for line in lines:
+        match = TRACE_ID_PATTERN.search(line)
+        if match:
+            trace_ids.append(match.group("trace_id"))
+    return trace_ids
