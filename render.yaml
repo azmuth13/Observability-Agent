@@ -3,7 +3,7 @@ services:
     name: ai-observability-agent
     runtime: image
     image:
-      url: ghcr.io/OWNER_OR_ORG/ai-observability-agent:latest
+      url: ghcr.io/azmuth13/ai-observability-agent:latest
     plan: free
     healthCheckPath: /api/health
     autoDeploy: false
