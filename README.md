@@ -60,3 +60,61 @@ cd frontend/react-chat
 npm install
 npm run dev
 ```
+
+### Pinecone
+https://app.pinecone.io/organizations/
+
+## Deployment path
+
+This repo now includes a Docker-first deployment baseline:
+
+- `Dockerfile` for packaging the backend
+- `.dockerignore` to keep the image lean
+- `.github/workflows/ci.yml` for tests plus Docker build validation
+- `.github/workflows/cd.yml` for publishing a container to GHCR and triggering Render
+- `render.yaml` as a starter Render blueprint
+
+### Run locally with Docker
+
+```bash
+docker build -t ai-observability-agent .
+docker run --rm -p 8000:8000 --env-file .env ai-observability-agent
+```
+
+Then verify:
+
+```bash
+curl http://localhost:8000/api/health
+```
+
+### CI
+
+CI runs on pull requests and pushes to `main`:
+
+- installs backend dependencies
+- runs `pytest`
+- builds the Docker image
+
+### CD
+
+CD runs on pushes to `main`:
+
+- builds and pushes `ghcr.io/<owner>/ai-observability-agent`
+- tags the image with `latest` and the Git SHA
+- triggers Render through `RENDER_DEPLOY_HOOK_URL`
+
+### Render setup
+
+1. Create a Render web service from an existing image.
+2. Point it at `ghcr.io/<your-user-or-org>/ai-observability-agent:latest`.
+3. Add the environment variables from `.env.example`.
+4. Set the health check path to `/api/health`.
+5. Add `RENDER_DEPLOY_HOOK_URL` as a GitHub Actions secret.
+
+### GitHub Actions secrets
+
+You only need one repository secret for the current CD flow:
+
+- `RENDER_DEPLOY_HOOK_URL`
+
+The workflow uses the built-in `GITHUB_TOKEN` to push to GHCR.

@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: ai-observability-agent
+    runtime: image
+    image:
+      url: ghcr.io/OWNER_OR_ORG/ai-observability-agent:latest
+    plan: free
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_ORIGIN
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.1-8b-instant
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        value: ai-observability-agent
+      - key: PINECONE_NAMESPACE
+        value: observability-docs
+      - key: LANGCHAIN_API_KEY
+        sync: false
+      - key: LANGCHAIN_TRACING_V2
+        value: "true"
+      - key: LANGCHAIN_PROJECT
+        value: ai-observability-agent
+      - key: EMBEDDING_MODEL
+        value: sentence-transformers/all-MiniLM-L6-v2
