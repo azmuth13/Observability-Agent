@@ -20,9 +20,17 @@ class Settings(BaseSettings):
     app_port: int = 8000
     app_reload: bool = True
     app_origin: str = "http://localhost:5173"
+    app_log_level: str = "INFO"
+    app_log_path: Path = ROOT_DIR / "logs" / "backend.log"
+    mock_mode: bool = Field(default=False, alias="MOCK_MODE")
+    use_pinecone: bool = Field(default=True, alias="USE_PINECONE")
+    enable_mcp: bool = Field(default=True, alias="ENABLE_MCP")
+    llm_provider: str = Field(default="groq", alias="LLM_PROVIDER")
 
     groq_api_key: str = Field(default="", alias="GROQ_API_KEY")
     groq_model: str = Field(default="llama-3.1-8b-instant", alias="GROQ_MODEL")
+    google_api_key: str = Field(default="", alias="GOOGLE_API_KEY")
+    google_model: str = Field(default="gemini-3-flash-preview", alias="GOOGLE_MODEL")
 
     pinecone_api_key: str = Field(default="", alias="PINECONE_API_KEY")
     pinecone_index_name: str = Field(

@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "ai-observability-agent": {
+      "command": "python",
+      "args": [
+        "-m",
+        "backend.mcp.server"
+      ],
+      "cwd": ".",
+      "env": {
+        "ENABLE_MCP": "true"
+      }
+    }
+  }
+}
