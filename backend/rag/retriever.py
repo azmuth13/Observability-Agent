@@ -38,7 +38,10 @@ def get_retriever(search_kwargs: dict | None = None):
 
 def search_documents(query: str, k: int = 4) -> str:
     settings = get_settings()
-    if not settings.pinecone_api_key:
+    if settings.mock_mode:
+        return _search_local_documents(query, k=k)
+
+    if not settings.use_pinecone or not settings.pinecone_api_key:
         return _search_local_documents(query, k=k)
 
     try:
@@ -77,3 +80,13 @@ def _search_local_documents(query: str, k: int = 4) -> str:
         content = path.read_text(encoding="utf-8")
         results.append(f"Source: {path.name}\n{content}")
     return "\n\n".join(results)
+
+
+def get_retrieval_source() -> str:
+    """Describe which retrieval path is currently configured."""
+    settings = get_settings()
+    if settings.mock_mode:
+        return "mock"
+    if settings.use_pinecone and settings.pinecone_api_key:
+        return "pinecone"
+    return "local"

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from backend.tools.doc_tool import retrieve_docs_tool
+from backend.config import get_settings
 from backend.tools.log_tool import analyze_logs_tool, search_logs_tool
 from backend.tools.metrics_tool import get_metrics_tool
 
@@ -14,6 +15,9 @@ except ImportError:  # pragma: no cover
 
 def create_mcp_server():
     """Create an MCP server if the dependency is installed."""
+    settings = get_settings()
+    if not settings.enable_mcp:
+        raise RuntimeError("MCP server is disabled. Set ENABLE_MCP=true to run it.")
     if FastMCP is None:
         raise RuntimeError("Install `mcp` to run the MCP server.")
 

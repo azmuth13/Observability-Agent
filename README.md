@@ -47,6 +47,25 @@ Small agentic AI project scaffold for learning:
 uvicorn backend.main:app --reload --app-dir .
 ```
 
+The backend now writes structured JSON logs to `logs/backend.log` and mirrors them to stdout.
+Each HTTP response also includes an `X-Request-ID` header, and chat responses include observability metadata such as intent, tools used, retrieval source, and per-stage latency.
+
+To switch LLM providers, configure `.env` like this:
+
+```bash
+LLM_PROVIDER=google
+GOOGLE_API_KEY=your_google_api_key
+GOOGLE_MODEL=gemini-3-flash-preview
+```
+
+Groq remains available with:
+
+```bash
+LLM_PROVIDER=groq
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=llama-3.1-8b-instant
+```
+
 5. Ingest documents:
 
 ```bash
@@ -85,7 +104,30 @@ Then verify:
 
 ```bash
 curl http://localhost:8000/api/health
+curl http://localhost:8000/api/debug/status
 ```
+
+### Runtime modes
+
+Optional environment flags:
+
+- `MOCK_MODE=true` disables live LLM usage and keeps responses deterministic for demos.
+- `USE_PINECONE=false` forces local document fallback retrieval.
+- `ENABLE_MCP=false` disables the MCP server startup path.
+
+### Evaluation dataset
+
+Sample regression-style prompts live in:
+
+- [evaluation/sample_queries.json](/Users/suraj/Documents/Codex/ai-observability-agent/evaluation/sample_queries.json)
+
+They capture expected intent, tool path, and evidence type so you can measure changes over time.
+
+### MCP config
+
+A starter MCP client configuration is included at:
+
+- [mcp.json](/Users/suraj/Documents/Codex/ai-observability-agent/mcp.json)
 
 ### CI
 

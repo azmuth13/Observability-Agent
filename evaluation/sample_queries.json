@@ -1,0 +1,38 @@
+[
+  {
+    "id": "logs-oom-001",
+    "query": "Do you see any out of memory error in the logs? If yes, at what time?",
+    "expected_intent": "logs",
+    "expected_tool_path": [
+      "search_logs",
+      "analyze_logs"
+    ],
+    "expected_evidence_type": "log_lines"
+  },
+  {
+    "id": "logs-trace-002",
+    "query": "Do you see any trace_id in the recent errors?",
+    "expected_intent": "logs",
+    "expected_tool_path": [
+      "search_logs",
+      "analyze_logs"
+    ],
+    "expected_evidence_type": "trace_id"
+  },
+  {
+    "id": "metrics-cpu-003",
+    "query": "Why is CPU high in my Java service?",
+    "expected_intent": "metrics",
+    "expected_tool_path": [
+      "get_metrics"
+    ],
+    "expected_evidence_type": "synthetic_metrics"
+  },
+  {
+    "id": "docs-jvm-004",
+    "query": "How do I troubleshoot JVM memory pressure?",
+    "expected_intent": "docs",
+    "expected_tool_path": [],
+    "expected_evidence_type": "documentation"
+  }
+]
