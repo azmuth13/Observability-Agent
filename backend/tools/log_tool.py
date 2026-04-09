@@ -8,6 +8,7 @@ from pathlib import Path
 from langchain_core.tools import tool
 
 from backend.config import get_settings
+from backend.live_logs.store import LiveLogStore
 
 
 ERROR_PATTERNS = {
@@ -27,14 +28,30 @@ def _read_log_file() -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _read_live_logs(query_terms: list[str], limit: int) -> list[str]:
+    settings = get_settings()
+    if not settings.enable_live_logs:
+        return []
+
+    store = LiveLogStore()
+    if store.count() == 0:
+        return []
+
+    return store.search(query_terms, limit=limit)
+
+
 @tool("search_logs")
 def search_logs_tool(query: str, limit: int = 5) -> str:
     """Search local sample logs for lines matching the query."""
+    query_terms = _expand_query_terms(query)
+    live_lines = _read_live_logs(query_terms, limit)
+    if live_lines:
+        return "\n".join(live_lines)
+
     log_text = _read_log_file()
     if not log_text:
         return "No sample log file found."
 
-    query_terms = _expand_query_terms(query)
     scored_lines: list[tuple[int, str]] = []
     for line in log_text.splitlines():
         lower_line = line.lower()

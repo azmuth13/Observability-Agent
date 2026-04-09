@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     mock_mode: bool = Field(default=False, alias="MOCK_MODE")
     use_pinecone: bool = Field(default=True, alias="USE_PINECONE")
     enable_mcp: bool = Field(default=True, alias="ENABLE_MCP")
+    enable_live_logs: bool = Field(default=False, alias="ENABLE_LIVE_LOGS")
     llm_provider: str = Field(default="groq", alias="LLM_PROVIDER")
 
     groq_api_key: str = Field(default="", alias="GROQ_API_KEY")
@@ -50,6 +51,11 @@ class Settings(BaseSettings):
 
     docs_path: Path = DATA_DIR / "docs"
     sample_logs_path: Path = DATA_DIR / "sample_logs" / "app.log"
+    live_logs_db_path: Path = DATA_DIR / "live_logs" / "recent_logs.db"
+    live_logs_max_rows: int = Field(default=5000, alias="LIVE_LOGS_MAX_ROWS")
+    kafka_bootstrap_servers: str = Field(default="localhost:9092", alias="KAFKA_BOOTSTRAP_SERVERS")
+    kafka_logs_topic: str = Field(default="application-logs", alias="KAFKA_LOGS_TOPIC")
+    kafka_group_id: str = Field(default="ai-observability-agent", alias="KAFKA_GROUP_ID")
 
     model_config = SettingsConfigDict(
         env_file=ROOT_DIR / ".env",
